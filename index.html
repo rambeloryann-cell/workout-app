@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#0e0e12" id="metaThemeColor" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Workout Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">WORKOUT</div>
+    <div class="header-right">
+      <div class="streak-pill">
+        <span id="flameIcon">🔥</span>
+        <span id="streakDisplay">0</span>
+      </div>
+      <button class="btn-sm" id="themeToggle">☀ Clair</button>
+      <button class="btn-sm" id="btnExport">Exporter</button>
+      <button class="btn-sm" id="btnImport">Importer</button>
+      <input type="file" id="importInput" accept=".json" />
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" data-tab="tab-programme">Programme</button>
+    <button class="tab" data-tab="tab-seance">Séance</button>
+    <button class="tab" data-tab="tab-progression">Progression</button>
+  </div>
+
+  <main>
+
+    <!-- TAB : PROGRAMME -->
+    <div class="tab-content active" id="tab-programme">
+
+      <div class="week-section">
+        <div class="section-title">CETTE SEMAINE</div>
+        <div class="week-grid" id="weekGrid"></div>
+      </div>
+
+    </div>
+
+    <!-- TAB : SÉANCE -->
+    <div class="tab-content" id="tab-seance">
+
+      <div id="seanceWrapper">
+        <!-- État vide : aucun jour sélectionné -->
+        <div class="empty-seance" id="emptySeance">
+          <div class="empty-seance-icon">📅</div>
+          <div class="empty-seance-title">AUCUNE SÉANCE SÉLECTIONNÉE</div>
+          <div style="color:var(--text-sub); font-size:13px;">Choisis un jour depuis l'onglet Programme.</div>
+        </div>
+
+        <!-- Contenu séance -->
+        <div id="seanceContent" style="display:none">
+          <div class="seance-header">
+            <div>
+              <div class="seance-titre" id="seanceTitre"></div>
+              <div class="seance-muscles" id="seanceMuscles"></div>
+            </div>
+          </div>
+
+          <div class="rest-config">
+            <label>Temps de repos</label>
+            <input type="number" id="restInput" min="1" max="10" value="4" />
+            <div class="spin-btns">
+              <button class="spin-btn" onclick="adjustRest(1)">▲</button>
+              <button class="spin-btn" onclick="adjustRest(-1)">▼</button>
+            </div>
+            <label>min</label>
+          </div>
+
+          <div id="seanceContainer"></div>
+
+          <div class="save-section">
+            <button class="btn-secondary" onclick="renderSeance()">Réinitialiser</button>
+            <button class="btn-primary" onclick="saveSeance()">Sauvegarder la séance</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB : PROGRESSION -->
+    <div class="tab-content" id="tab-progression">
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="statSessions">0</div>
+          <div class="stat-label">Séances complètes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statStreak">0</div>
+          <div class="stat-label">Streak actuel 🔥</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="statTotal">0</div>
+          <div class="stat-label">Séries totales</div>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <div class="chart-header">
+          <div class="chart-title">PROGRESSION POIDS</div>
+          <select class="chart-select" id="chartExercice" onchange="renderChart(Storage.getSessions())"></select>
+        </div>
+        <canvas id="progressChart" height="180"></canvas>
+      </div>
+
+      <div class="section-title" style="margin-bottom:12px">HISTORIQUE</div>
+      <div class="history-section" id="historyList"></div>
+
+    </div>
+
+  </main>
+
+  <div class="notif" id="notif"></div>
+
+  <!-- SCRIPTS -->
+  <script src="js/programme.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/tracker.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>

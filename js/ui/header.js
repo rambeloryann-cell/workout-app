@@ -7,25 +7,34 @@ function setupHeader() {
 }
 
 function setupThemeToggle() {
-  const btn = document.getElementById('themeToggle');
   const saved = localStorage.getItem('theme') || 'dark';
   document.documentElement.setAttribute('data-theme', saved);
-  btn.textContent = saved === 'dark' ? '☀ Clair' : '☾ Sombre';
   document.getElementById('metaThemeColor')?.setAttribute('content', saved === 'dark' ? '#0e0e12' : '#f2f2f7');
 
-  btn.addEventListener('click', () => {
+  const label = saved === 'dark' ? '☀ Clair' : '☾ Sombre';
+  const btnDesktop = document.getElementById('themeToggle');
+  const btnMobile  = document.getElementById('themeToggleMobile');
+  if (btnDesktop) btnDesktop.textContent = label;
+  if (btnMobile)  btnMobile.textContent  = label;
+
+  function toggle() {
     const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
-    btn.textContent = next === 'dark' ? '☀ Clair' : '☾ Sombre';
+    const newLabel = next === 'dark' ? '☀ Clair' : '☾ Sombre';
+    if (btnDesktop) btnDesktop.textContent = newLabel;
+    if (btnMobile)  btnMobile.textContent  = newLabel;
     document.getElementById('metaThemeColor')?.setAttribute('content', next === 'dark' ? '#0e0e12' : '#f2f2f7');
     closeBurger();
-  });
+  }
+
+  btnDesktop?.addEventListener('click', toggle);
+  btnMobile?.addEventListener('click', toggle);
 }
 
 function setupBurgerMenu() {
-  const burger = document.getElementById('burgerBtn');
-  const menu = document.getElementById('burgerMenu');
+  const burger  = document.getElementById('burgerBtn');
+  const menu    = document.getElementById('burgerMenu');
   const overlay = document.getElementById('burgerOverlay');
 
   burger.addEventListener('click', () => {
@@ -46,16 +55,21 @@ function closeBurger() {
 }
 
 function setupImportExport() {
-  document.getElementById('btnExport').addEventListener('click', () => {
+  function doExport() {
     Storage.exportJSON();
     showNotif('Données exportées !');
     closeBurger();
-  });
+  }
 
-  document.getElementById('btnImport').addEventListener('click', () => {
+  function doImport() {
     document.getElementById('importInput').click();
     closeBurger();
-  });
+  }
+
+  document.getElementById('btnExport')?.addEventListener('click', doExport);
+  document.getElementById('btnExportMobile')?.addEventListener('click', doExport);
+  document.getElementById('btnImport')?.addEventListener('click', doImport);
+  document.getElementById('btnImportMobile')?.addEventListener('click', doImport);
 
   document.getElementById('importInput').addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -66,7 +80,7 @@ function setupImportExport() {
         renderStreak();
         showNotif('Données importées !');
       } else {
-        showNotif('Erreur lors de l\'import.');
+        showNotif("Erreur lors de l'import.");
       }
     });
   });

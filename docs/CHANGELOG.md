@@ -46,3 +46,17 @@
 - Dark mode / Light mode
 - Streak 🔥 avec flamme incrémentale
 - Grille semaine : Dimanche disponible, autres verrouillés
+
+## Session 6
+
+- Correction bug burger menu mobile : boutons Clair, Exporter, Importer ne répondaient pas
+- IDs dupliqués corrigés (themeToggleMobile, btnExportMobile, btnImportMobile)
+- burger-menu fermé : pointer-events: none ajouté (empêche interception de clics hors écran)
+- desktop-only : pointer-events: none ajouté sur mobile
+
+## Session 7
+
+- Suppression de l'overlay burger (interceptait les clics avant les boutons)
+- Burger menu : fermeture via click document en dehors du menu
+- Ajout e.stopPropagation() sur tous les boutons du burger
+- Remplacement pointer-events par logique document.addEventListener('click')

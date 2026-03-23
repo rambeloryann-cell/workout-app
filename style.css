@@ -171,18 +171,6 @@ header {
 
 .burger-item:hover { border-color: var(--accent); color: var(--accent); }
 
-#burgerOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 250;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-}
-
-#burgerOverlay.visible { opacity: 1; pointer-events: all; }
-
 /* ── TABS ── */
 .tabs {
   display: flex;

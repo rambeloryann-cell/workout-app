@@ -124,3 +124,5 @@ workout-app/
 - Session 3 : spinners custom, contraste dark mode
 - Session 4 : responsive mobile complet
 - Session 5 : refonte majeure, nouvelle arborescence, planning.js, burger menu, séance progressive, réglages, CONTEXTE.md
+- Session 6 : correction bug burger menu mobile (IDs dupliqués, pointer-events)
+- Session 7 : suppression overlay burger, fix définitif des boutons mobile (stopPropagation)

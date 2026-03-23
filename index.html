@@ -2,29 +2,48 @@
 <html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0e0e12" id="metaThemeColor" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Workout Tracker</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
+  <!-- OVERLAY BURGER -->
+  <div id="burgerOverlay"></div>
+
   <!-- HEADER -->
   <header>
     <div class="logo">WORKOUT</div>
-    <div class="header-right">
-      <div class="streak-pill">
-        <span id="flameIcon">🔥</span>
-        <span id="streakDisplay">0</span>
-      </div>
+
+    <!-- Streak toujours visible -->
+    <div class="streak-pill">
+      <span id="flameIcon">🔥</span>
+      <span id="streakDisplay">0</span>
+    </div>
+
+    <!-- Actions desktop -->
+    <div class="header-actions desktop-only">
       <button class="btn-sm" id="themeToggle">☀ Clair</button>
       <button class="btn-sm" id="btnExport">Exporter</button>
       <button class="btn-sm" id="btnImport">Importer</button>
-      <input type="file" id="importInput" accept=".json" />
     </div>
+
+    <!-- Burger mobile -->
+    <button class="burger-btn" id="burgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- Menu burger -->
+    <div class="burger-menu" id="burgerMenu">
+      <button class="burger-item" id="themeToggle">☀ Clair</button>
+      <button class="burger-item" id="btnExport">Exporter</button>
+      <button class="burger-item" id="btnImport">Importer</button>
+    </div>
+
+    <input type="file" id="importInput" accept=".json" style="display:none" />
   </header>
 
   <!-- TABS -->
@@ -32,64 +51,50 @@
     <button class="tab active" data-tab="tab-programme">Programme</button>
     <button class="tab" data-tab="tab-seance">Séance</button>
     <button class="tab" data-tab="tab-progression">Progression</button>
+    <button class="tab" data-tab="tab-settings">Réglages</button>
   </div>
 
   <main>
 
     <!-- TAB : PROGRAMME -->
     <div class="tab-content active" id="tab-programme">
-
-      <div class="week-section">
-        <div class="section-title">CETTE SEMAINE</div>
-        <div class="week-grid" id="weekGrid"></div>
-      </div>
-
+      <div class="section-title">CETTE SEMAINE</div>
+      <div class="week-grid" id="weekGrid"></div>
     </div>
 
     <!-- TAB : SÉANCE -->
     <div class="tab-content" id="tab-seance">
-
-      <div id="seanceWrapper">
-        <!-- État vide : aucun jour sélectionné -->
-        <div class="empty-seance" id="emptySeance">
-          <div class="empty-seance-icon">📅</div>
-          <div class="empty-seance-title">AUCUNE SÉANCE SÉLECTIONNÉE</div>
-          <div style="color:var(--text-sub); font-size:13px;">Choisis un jour depuis l'onglet Programme.</div>
-        </div>
-
-        <!-- Contenu séance -->
-        <div id="seanceContent" style="display:none">
-          <div class="seance-header">
-            <div>
-              <div class="seance-titre" id="seanceTitre"></div>
-              <div class="seance-muscles" id="seanceMuscles"></div>
-            </div>
-          </div>
-
-          <div class="rest-config">
-            <label>Temps de repos</label>
-            <input type="number" id="restInput" min="1" max="10" value="4" />
-            <div class="spin-btns">
-              <button class="spin-btn" onclick="adjustRest(1)">▲</button>
-              <button class="spin-btn" onclick="adjustRest(-1)">▼</button>
-            </div>
-            <label>min</label>
-          </div>
-
-          <div id="seanceContainer"></div>
-
-          <div class="save-section">
-            <button class="btn-secondary" onclick="renderSeance()">Réinitialiser</button>
-            <button class="btn-primary" onclick="saveSeance()">Sauvegarder la séance</button>
-          </div>
-        </div>
+      <div class="empty-seance" id="emptySeance">
+        <div class="empty-seance-icon">📅</div>
+        <div class="empty-seance-title">AUCUNE SÉANCE SÉLECTIONNÉE</div>
+        <div>Choisis un jour depuis l'onglet Programme.</div>
       </div>
 
+      <div id="seanceContent" style="display:none">
+        <div class="seance-header">
+          <div class="seance-titre" id="seanceTitre"></div>
+          <div class="seance-muscles" id="seanceMuscles"></div>
+        </div>
+
+        <div class="rest-config">
+          <label>Repos</label>
+          <button class="spin-btn" onclick="adjustRest(-1)">▼</button>
+          <input type="number" id="restInput" min="1" max="10" value="4" />
+          <button class="spin-btn" onclick="adjustRest(1)">▲</button>
+          <label>min</label>
+        </div>
+
+        <div id="seanceContainer"></div>
+
+        <div class="save-section" id="saveSection" style="display:none">
+          <button class="btn-secondary" onclick="resetSeance()">Réinitialiser</button>
+          <button class="btn-primary" onclick="saveSeance()">Sauvegarder</button>
+        </div>
+      </div>
     </div>
 
     <!-- TAB : PROGRESSION -->
     <div class="tab-content" id="tab-progression">
-
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-value" id="statSessions">0</div>
@@ -97,7 +102,7 @@
         </div>
         <div class="stat-card">
           <div class="stat-value" id="statStreak">0</div>
-          <div class="stat-label">Streak actuel 🔥</div>
+          <div class="stat-label">Streak 🔥</div>
         </div>
         <div class="stat-card">
           <div class="stat-value" id="statTotal">0</div>
@@ -115,18 +120,31 @@
 
       <div class="section-title" style="margin-bottom:12px">HISTORIQUE</div>
       <div class="history-section" id="historyList"></div>
+    </div>
 
+    <!-- TAB : RÉGLAGES -->
+    <div class="tab-content" id="tab-settings">
+      <div class="section-title">PERSONNALISER LE PROGRAMME</div>
+      <div class="settings-intro">Choisis les muscles de chaque jour et le nombre de circuits.</div>
+      <div id="settingsContainer"></div>
     </div>
 
   </main>
 
   <div class="notif" id="notif"></div>
 
-  <!-- SCRIPTS -->
-  <script src="js/programme.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/timer.js"></script>
-  <script src="js/tracker.js"></script>
+  <!-- SCRIPTS : ordre important -->
+  <script src="js/core/storage.js"></script>
+  <script src="js/core/timer.js"></script>
+  <script src="js/core/tracker.js"></script>
+  <script src="js/data/exercices.js"></script>
+  <script src="js/data/planning.js"></script>
+  <script src="js/data/programme.js"></script>
+  <script src="js/ui/header.js"></script>
+  <script src="js/ui/weekGrid.js"></script>
+  <script src="js/ui/seance.js"></script>
+  <script src="js/ui/settings.js"></script>
+  <script src="js/ui/progression.js"></script>
   <script src="js/main.js"></script>
 
 </body>
